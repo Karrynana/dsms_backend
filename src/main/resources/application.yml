@@ -1,0 +1,26 @@
+spring:
+  profiles:
+    active: dev
+  datasource:
+    username: dsms
+    password: 111225
+    url: jdbc:mysql://82.157.175.248:3306/dsms?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+server:
+  port: 8081
+logging:
+  level:
+    com.nenu.dsms.mapper: debug
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: jdbc:mysql://localhost:3306/dsms?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: dsms
+    password: 111225
+server:
+  port: 8081
