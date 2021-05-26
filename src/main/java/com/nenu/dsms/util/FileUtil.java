@@ -7,6 +7,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.util.Objects;
 
+// 文件工具类
 public class FileUtil {
 
     public static String saveFile(MultipartFile uploadFile, String addr) {

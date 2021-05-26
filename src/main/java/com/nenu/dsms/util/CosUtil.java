@@ -15,6 +15,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.Date;
 
+// 腾讯云存储的工具类
 public class CosUtil {
     private final String secretId = "AKIDtqDVcX29VhCZkjwEukKebaTEq68x8Xkr";
     private final String secretKey = "A8xrbm494uc2LUTXRDxYlpjU8czCvuiM";

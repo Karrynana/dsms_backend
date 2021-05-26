@@ -110,16 +110,25 @@ public class TUserServiceImpl extends ServiceImpl<TUserMapper, TUser> implements
 
     @Override
     public void registerUser(TUser user, MultipartFile avatarFile) {
+        // 记录创建时间
         user.setCreateTime(LocalDateTime.now().toInstant(ZoneOffset.of("+8")).toEpochMilli());
+        // 记录创建者
         user.setCreator(DsmsContext.currentUser().getId());
+
+        // 如果有头像
         if (!Objects.isNull(avatarFile)) {
             try {
+                // 上传头像
                 String put = CosUtil.INSTANCE.put(user.getAccount(), FileUtil.multipartFileToFile(avatarFile));
+                // 记录头像key
                 user.setAvatar(user.getAccount());
             } catch (IOException e) {
                 throw new DsmsException(DsmsExceptionDef.FILE_SAVE_ERR);
             }
         }
+
+        // 真正保存用户
+        save(user);
     }
 
     private Map<String, List<TUser>> listToRoleMap(List<TUser> list) {

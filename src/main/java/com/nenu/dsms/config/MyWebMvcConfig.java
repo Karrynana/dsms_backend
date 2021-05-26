@@ -6,6 +6,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+// 配置 这里配置的是拦截器
 @Configuration
 public class MyWebMvcConfig implements WebMvcConfigurer {
     @Override
