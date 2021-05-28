@@ -2,4 +2,4 @@ FROM java:8
 EXPOSE 8080
 ARG JAR_FILE
 ADD target/${JAR_FILE} /dsms.jar
-ENTRYPOINT ["java", "-jar","/dsms.jar"]
+ENTRYPOINT ["java", "-jar", "-cp src com.nenu.dsms.DsmsApplication" ,"/dsms.jar"]

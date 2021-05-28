@@ -220,8 +220,7 @@ public class TUserProcessListServiceImpl extends ServiceImpl<TUserProcessListMap
             return stateInfoResponseVo;
         }
 
-        // 因为state字段严格按照123排序，所以order字段就是next order在数组的index
-        TProcessTypeState tProcessTypeState = orderedState.get(active.getOrder());
+        TProcessTypeState tProcessTypeState = orderedState.get(active.getOrder() + 1);
         stateInfoResponseVo.setStateName(tProcessTypeState.getName());
         return stateInfoResponseVo;
     }
