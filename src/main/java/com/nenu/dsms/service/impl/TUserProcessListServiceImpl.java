@@ -96,7 +96,7 @@ public class TUserProcessListServiceImpl extends ServiceImpl<TUserProcessListMap
                 updateById(active);
                 return;
             }
-            // 主状态不是终态
+            // 主状态不是终态 流转到下一个大状态的第一个小状态
             TUserProcess mainPrc = userProcessService.getById(active.getPrcId());
             TUserProcess mainNextState = userProcessService.lambdaQuery()
                     .eq(TUserProcess::getOrder, active.getNext())
@@ -121,12 +121,13 @@ public class TUserProcessListServiceImpl extends ServiceImpl<TUserProcessListMap
             entity.setParent(0);
 
             save(entity);
+            // 将上一个状态置为非激活
             active.setActiveFlag(0);
             updateById(active);
             return;
         }
 
-        // 不是子状态的终态
+        // 不是子状态的终态 只对order字段自增
         BeanUtils.copyProperties(active, entity);
         entity.setOrder(active.getOrder() + 1);
         int nextState = active.getPrcStatus() + 1;
@@ -148,9 +149,9 @@ public class TUserProcessListServiceImpl extends ServiceImpl<TUserProcessListMap
         // 创建需要写库的实体
         TUserProcessList entity = new TUserProcessList();
         entity.setActiveFlag(1);
-        // 是子状态的初始态
+        // 是子状态的初始态 则需要将大状态流转到上一个状态
         if (active.getPrcStatus().equals(orderedState.get(0).getOrder())) {
-            // 主状态也达到初态
+            // 主状态也达到初态 没有上一个大状态
             if (active.getLast().equals(-1)) {
                 log.debug("不能删除初态");
                 throw new DsmsException(DsmsExceptionDef.INVALID_PARAM);

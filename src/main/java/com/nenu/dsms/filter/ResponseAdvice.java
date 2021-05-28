@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @RestControllerAdvice
+// 返回值和异常处理拦截器
 public class ResponseAdvice implements ResponseBodyAdvice<Object> {
     @Override
     public boolean supports(MethodParameter methodParameter, Class aClass) {

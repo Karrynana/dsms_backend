@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
+// 口令工具类
 public class JWTUtil {
 
     private static final String secret = "join666";

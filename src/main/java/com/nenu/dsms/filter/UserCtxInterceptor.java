@@ -24,6 +24,7 @@ import java.util.Objects;
 
 @Component
 @Slf4j
+// 用户上下文拦截器
 public class UserCtxInterceptor implements HandlerInterceptor {
 
     @Override
