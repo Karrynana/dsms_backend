@@ -13,5 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ITUserProcessService extends IService<TUserProcess> {
 
-    TUserProcess initNewRecord(Integer uid, Integer lid);
+    TUserProcess initNewRecord(Integer uid, Integer lid, Integer ulid);
 }

@@ -2,24 +2,21 @@ package com.nenu.dsms.controller;
 
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.nenu.dsms.def.DsmsContext;
 import com.nenu.dsms.def.exception.DsmsException;
 import com.nenu.dsms.def.exception.DsmsExceptionDef;
 import com.nenu.dsms.entity.TUser;
 import com.nenu.dsms.filter.NoSignIn;
 import com.nenu.dsms.service.ITUserService;
-import com.nenu.dsms.util.FileUtil;
 import com.nenu.dsms.util.JWTUtil;
 import com.nenu.dsms.vo.base.ResponseVO;
 import com.nenu.dsms.vo.base.UserInfo;
-import com.nenu.dsms.vo.response.UserInfoResponseVO;
+import com.nenu.dsms.vo.response.UserInfoResponseVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -66,7 +63,7 @@ public class TUserController {
     }
 
     @GetMapping("/my")
-    public UserInfoResponseVO getUserInfo() {
+    public UserInfoResponseVo getUserInfo() {
         return userService.getCurUserInfo();
     }
 

@@ -36,4 +36,8 @@ public class TLicenceProcess implements Serializable {
     private Integer next;
 
     private Integer last;
+
+    private Long targetTime;
+
+    private Long curTime;
 }

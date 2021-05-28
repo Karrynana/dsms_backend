@@ -37,4 +37,7 @@ public class TUserProcess implements Serializable {
 
     private Integer last;
 
+    private Long targetTime;
+
+    private Long curTime;
 }

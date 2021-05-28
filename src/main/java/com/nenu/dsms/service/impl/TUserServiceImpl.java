@@ -14,7 +14,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.nenu.dsms.util.CosUtil;
 import com.nenu.dsms.util.FileUtil;
 import com.nenu.dsms.vo.base.UserInfo;
-import com.nenu.dsms.vo.response.UserInfoResponseVO;
+import com.nenu.dsms.vo.response.UserInfoResponseVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -72,8 +72,8 @@ public class TUserServiceImpl extends ServiceImpl<TUserMapper, TUser> implements
     }
 
     @Override
-    public UserInfoResponseVO getCurUserInfo() {
-        UserInfoResponseVO userInfoResponseVO = new UserInfoResponseVO();
+    public UserInfoResponseVo getCurUserInfo() {
+        UserInfoResponseVo userInfoResponseVO = new UserInfoResponseVo();
         UserInfo userInfo = DsmsContext.currentUser();
 
         // 当前用户
@@ -88,7 +88,7 @@ public class TUserServiceImpl extends ServiceImpl<TUserMapper, TUser> implements
 
         // 当前用户的创建者
         TUser creator = getById(u.getCreator());
-        UserInfoResponseVO creatorRespVO = new UserInfoResponseVO();
+        UserInfoResponseVo creatorRespVO = new UserInfoResponseVo();
         BeanUtils.copyProperties(creator, creatorRespVO);
         // 创建者的创建者置为空
         creatorRespVO.setCreator(null);

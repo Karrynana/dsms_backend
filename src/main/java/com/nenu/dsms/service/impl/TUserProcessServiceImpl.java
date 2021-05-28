@@ -34,7 +34,7 @@ public class TUserProcessServiceImpl extends ServiceImpl<TUserProcessMapper, TUs
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public TUserProcess initNewRecord(Integer uid, Integer lid) {
+    public TUserProcess initNewRecord(Integer uid, Integer lid, Integer ulid) {
         List<TLicenceProcess> lpList = licenceProcessService.list(Wrappers.lambdaQuery(TLicenceProcess.class)
                 .eq(TLicenceProcess::getLicenseId, lid))
                 .stream().sorted(Comparator.comparingInt(TLicenceProcess::getOrder))
@@ -44,6 +44,7 @@ public class TUserProcessServiceImpl extends ServiceImpl<TUserProcessMapper, TUs
         lpList.forEach(lp -> {
             TUserProcess tUserProcess = new TUserProcess();
             BeanUtils.copyProperties(lp, tUserProcess);
+            tUserProcess.setUlid(ulid);
             newRecords.add(tUserProcess);
         });
 

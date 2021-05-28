@@ -43,7 +43,7 @@ public class TUserLicenceServiceImpl extends ServiceImpl<TUserLicenceMapper, TUs
         userLicence.setLicenceName(licence.getName());
         userLicence.setLicenceEnName(licence.getEnName());
         userLicence.setActiveFlag(1);
-        userLicence.setUid(DsmsContext.currentUser().getId());
+        userLicence.setUid(uid);
         userLicence.setCreateTime(LocalDateTime.now().toEpochSecond(ZoneOffset.of("+8")));
         save(userLicence);
 

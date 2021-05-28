@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.nenu.dsms.def.DsmsContext;
 import com.nenu.dsms.entity.TUserProcessList;
 import com.nenu.dsms.service.ITUserProcessListService;
+import com.nenu.dsms.vo.response.StateInfoResponseVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,5 +55,10 @@ public class TUserProcessListController {
     public List<TUserProcessList> queryRecordsByProcessListId(Integer id) {
         return userProcessListService.list(Wrappers.lambdaQuery(TUserProcessList.class)
             .eq(TUserProcessList::getPrcId, id));
+    }
+
+    @GetMapping("/next/info")
+    public StateInfoResponseVo getNextStateInfo() {
+        return userProcessListService.getNextStateInfo(DsmsContext.currentUser().getId());
     }
 }

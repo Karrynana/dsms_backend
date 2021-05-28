@@ -3,6 +3,7 @@ package com.nenu.dsms.service;
 import com.nenu.dsms.entity.TUserProcess;
 import com.nenu.dsms.entity.TUserProcessList;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.nenu.dsms.vo.response.StateInfoResponseVo;
 
 /**
  * <p>
@@ -19,4 +20,6 @@ public interface ITUserProcessListService extends IService<TUserProcessList> {
     void nextStep(Integer uid);
 
     void lastStep(Integer uid);
+
+    StateInfoResponseVo getNextStateInfo(Integer id);
 }

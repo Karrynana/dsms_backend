@@ -2,7 +2,7 @@ package com.nenu.dsms.service;
 
 import com.nenu.dsms.entity.TUser;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.nenu.dsms.vo.response.UserInfoResponseVO;
+import com.nenu.dsms.vo.response.UserInfoResponseVo;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -17,7 +17,7 @@ public interface ITUserService extends IService<TUser> {
 
     String getVisibleUsers();
 
-    UserInfoResponseVO getCurUserInfo();
+    UserInfoResponseVo getCurUserInfo();
 
     void updateAvatar(MultipartFile avatarFile);
 

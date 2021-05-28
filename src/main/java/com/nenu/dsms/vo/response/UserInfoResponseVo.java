@@ -1,15 +1,11 @@
 package com.nenu.dsms.vo.response;
 
-import com.nenu.dsms.entity.TUser;
-import com.nenu.dsms.vo.base.UserInfo;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @NoArgsConstructor
-public class UserInfoResponseVO {
+public class UserInfoResponseVo {
 
     private Integer id;
 
@@ -27,7 +23,7 @@ public class UserInfoResponseVO {
 
     private String avatar;
 
-    private UserInfoResponseVO creator;
+    private UserInfoResponseVo creator;
 
     private Long createTime;
 }

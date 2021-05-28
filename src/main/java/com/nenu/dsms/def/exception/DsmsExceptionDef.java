@@ -22,6 +22,7 @@ public enum DsmsExceptionDef {
     USER_DATA_INVALID(15060, "用户数据异常，请联系管理员"),
     NO_MSG_FOUND(15061, "消息不存在"),
     SYSTEM_DATA_ERR(15062, "系统数据异常，请联系管理员"),
+    PROCESS_ACTIVED(15063, "已存在流程中的学习记录，请完成学习后再试"),
 
     // 文件异常
     FILE_SAVE_ERR(15071, "文件上传异常");

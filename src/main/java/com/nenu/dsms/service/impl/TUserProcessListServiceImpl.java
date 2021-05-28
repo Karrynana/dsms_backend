@@ -12,6 +12,7 @@ import com.nenu.dsms.service.ITProcessTypeStateService;
 import com.nenu.dsms.service.ITUserProcessListService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.nenu.dsms.service.ITUserProcessService;
+import com.nenu.dsms.vo.response.StateInfoResponseVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -190,6 +191,39 @@ public class TUserProcessListServiceImpl extends ServiceImpl<TUserProcessListMap
         entity.setPrcStatus(active.getPrcStatus() - 1);
         int lastState = active.getPrcStatus() - 1;
         normalSetChildStateFields(active, orderedState, entity, lastState);
+    }
+
+    @Override
+    public StateInfoResponseVo getNextStateInfo(Integer id) {
+        TUserProcessList active = getActive(id);
+        // 判断当前流程的子状态是否是初始态 如果是则进入上一个大状态 否则进入上一个子状态
+        List<TProcessTypeState> orderedState = processTypeStateService.list(Wrappers.lambdaQuery(TProcessTypeState.class)
+                .eq(TProcessTypeState::getType, active.getPrcType()))
+                .stream()
+                .sorted(Comparator.comparingInt(TProcessTypeState::getOrder))
+                .collect(Collectors.toList());
+        StateInfoResponseVo stateInfoResponseVo = new StateInfoResponseVo();
+        // 是子状态的终态
+        if (active.getPrcStatus().equals(orderedState.get(orderedState.size() - 1).getOrder())) {
+            // 主状态也达到终态
+            if (active.getNext().equals(-1)) {
+                stateInfoResponseVo.setStateName("完成学习");
+                return stateInfoResponseVo;
+            }
+            TUserProcess mainNextState = userProcessService.lambdaQuery()
+                    .eq(TUserProcess::getOrder, active.getNext())
+                    .eq(TUserProcess::getUlid, userProcessService.getById(active.getPrcId()).getUlid())
+                    .list().get(0);
+            TProcessTypeState nextState = processTypeStateService.getOne(Wrappers.lambdaQuery(TProcessTypeState.class)
+                    .eq(TProcessTypeState::getType, mainNextState.getProcessType()).eq(TProcessTypeState::getOrder, 0));
+            stateInfoResponseVo.setStateName(nextState.getName());
+            return stateInfoResponseVo;
+        }
+
+        // 因为state字段严格按照123排序，所以order字段就是next order在数组的index
+        TProcessTypeState tProcessTypeState = orderedState.get(active.getOrder());
+        stateInfoResponseVo.setStateName(tProcessTypeState.getName());
+        return stateInfoResponseVo;
     }
 
     private void normalSetChildStateFields(TUserProcessList active, List<TProcessTypeState> orderedState, TUserProcessList entity, int lastState) {
