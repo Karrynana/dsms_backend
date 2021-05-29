@@ -62,4 +62,6 @@ public class TUserProcessList implements Serializable {
     private Integer backFlag;
 
     private String stateName;
+
+    private Integer ulid;
 }

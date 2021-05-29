@@ -52,6 +52,13 @@ public class TUserLicenceController {
                 .eq(TUserLicence::getUid, DsmsContext.currentUser().getId()));
     }
 
+    @GetMapping("/active")
+    public TUserLicence queryCurrentUserActiveLicence() {
+        return userLicenceService.getOne(Wrappers.lambdaQuery(TUserLicence.class)
+                .eq(TUserLicence::getActiveFlag, 1)
+                .eq(TUserLicence::getUid, DsmsContext.currentUser().getId()));
+    }
+
     /**
      * 查询某个用户考过的驾照列表
      * @return 驾照列表
@@ -91,16 +98,6 @@ public class TUserLicenceController {
      */
     @PutMapping
     public void finishLicence(Integer uid) {
-        List<TUserLicence> list = userLicenceService.list(Wrappers.lambdaQuery(TUserLicence.class)
-                .eq(TUserLicence::getUid, uid)
-                .eq(TUserLicence::getActiveFlag, 1));
-        if (CollectionUtils.isEmpty(list) || list.size() > 1) {
-            throw new DsmsException(DsmsExceptionDef.USER_DATA_INVALID);
-        }
-
-        TUserLicence tUserLicence = list.get(0);
-        tUserLicence.setActiveFlag(2);
-
-        userLicenceService.updateById(tUserLicence);
+        userLicenceService.finishLicence(uid);
     }
 }

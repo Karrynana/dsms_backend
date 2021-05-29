@@ -1,6 +1,10 @@
 package com.nenu.dsms.service.impl;
 
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.nenu.dsms.def.DsmsContext;
+import com.nenu.dsms.def.exception.DsmsException;
+import com.nenu.dsms.def.exception.DsmsExceptionDef;
 import com.nenu.dsms.entity.TLicenceType;
 import com.nenu.dsms.entity.TUserLicence;
 import com.nenu.dsms.mapper.TUserLicenceMapper;
@@ -14,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
 
 /**
  * <p>
@@ -48,5 +53,20 @@ public class TUserLicenceServiceImpl extends ServiceImpl<TUserLicenceMapper, TUs
         save(userLicence);
 
         return userLicence.getId();
+    }
+
+    @Override
+    public void finishLicence(Integer uid) {
+        List<TUserLicence> list = list(Wrappers.lambdaQuery(TUserLicence.class)
+                .eq(TUserLicence::getUid, uid)
+                .eq(TUserLicence::getActiveFlag, 1));
+        if (CollectionUtils.isEmpty(list) || list.size() > 1) {
+            throw new DsmsException(DsmsExceptionDef.USER_DATA_INVALID);
+        }
+
+        TUserLicence tUserLicence = list.get(0);
+        tUserLicence.setActiveFlag(2);
+
+        updateById(tUserLicence);
     }
 }

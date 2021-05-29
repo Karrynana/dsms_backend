@@ -33,5 +33,5 @@ public class TCoach implements Serializable {
 
     private Integer curStuCount;
 
-
+    private String photo;
 }

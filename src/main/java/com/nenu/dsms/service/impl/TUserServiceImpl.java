@@ -5,9 +5,11 @@ import com.google.gson.Gson;
 import com.nenu.dsms.def.DsmsContext;
 import com.nenu.dsms.def.exception.DsmsException;
 import com.nenu.dsms.def.exception.DsmsExceptionDef;
+import com.nenu.dsms.entity.TCoach;
 import com.nenu.dsms.entity.TUser;
 import com.nenu.dsms.entity.TUserProcessList;
 import com.nenu.dsms.mapper.TUserMapper;
+import com.nenu.dsms.service.ITCoachService;
 import com.nenu.dsms.service.ITUserProcessListService;
 import com.nenu.dsms.service.ITUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -39,7 +41,9 @@ import java.util.stream.Collectors;
 public class TUserServiceImpl extends ServiceImpl<TUserMapper, TUser> implements ITUserService {
 
     @Autowired
-    ITUserProcessListService userProcessService;
+    private ITUserProcessListService userProcessService;
+    @Autowired
+    private ITCoachService coachService;
 
     @Override
     public String getVisibleUsers() {
@@ -129,6 +133,12 @@ public class TUserServiceImpl extends ServiceImpl<TUserMapper, TUser> implements
 
         // 真正保存用户
         save(user);
+
+        if (user.getRole().equals("coach")) {
+            TCoach tCoach = new TCoach();
+            tCoach.setUserId(user.getId());
+            coachService.save(tCoach);
+        }
     }
 
     private Map<String, List<TUser>> listToRoleMap(List<TUser> list) {

@@ -4,14 +4,13 @@ import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.nenu.dsms.def.exception.DsmsException;
 import com.nenu.dsms.def.exception.DsmsExceptionDef;
+import com.nenu.dsms.entity.TMessage;
 import com.nenu.dsms.entity.TProcessTypeState;
 import com.nenu.dsms.entity.TUserProcess;
 import com.nenu.dsms.entity.TUserProcessList;
 import com.nenu.dsms.mapper.TUserProcessListMapper;
-import com.nenu.dsms.service.ITProcessTypeStateService;
-import com.nenu.dsms.service.ITUserProcessListService;
+import com.nenu.dsms.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.nenu.dsms.service.ITUserProcessService;
 import com.nenu.dsms.vo.response.StateInfoResponseVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -42,6 +41,10 @@ public class TUserProcessListServiceImpl extends ServiceImpl<TUserProcessListMap
     ITProcessTypeStateService processTypeStateService;
     @Autowired
     ITUserProcessService userProcessService;
+    @Autowired
+    ITMessageService messageService;
+    @Autowired
+    ITUserLicenceService userLicenceService;
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
@@ -55,6 +58,7 @@ public class TUserProcessListServiceImpl extends ServiceImpl<TUserProcessListMap
         entity.setActiveFlag(1);
         entity.setStuId(uid);
         entity.setPrcType(firstProcess.getProcessType());
+        entity.setUlid(firstProcess.getUlid());
 
         List<TProcessTypeState> stateList = processTypeStateService.lambdaQuery().eq(TProcessTypeState::getType, firstProcess.getProcessType()).list()
                 .stream()
@@ -89,12 +93,14 @@ public class TUserProcessListServiceImpl extends ServiceImpl<TUserProcessListMap
 
         // 创建需要写库的实体
         TUserProcessList entity = new TUserProcessList();
+        entity.setUlid(active.getUlid());
         // 是子状态的终态
         if (active.getPrcStatus().equals(orderedState.get(orderedState.size() - 1).getOrder())) {
             // 主状态也达到终态
             if (active.getNext().equals(-1)) {
                 active.setActiveFlag(0);
                 updateById(active);
+                userLicenceService.finishLicence(uid);
                 return;
             }
             // 主状态不是终态 流转到下一个大状态的第一个小状态
@@ -125,6 +131,7 @@ public class TUserProcessListServiceImpl extends ServiceImpl<TUserProcessListMap
             // 将上一个状态置为非激活
             active.setActiveFlag(0);
             updateById(active);
+            sendMsgIfNeed(entity);
             return;
         }
 
@@ -134,6 +141,7 @@ public class TUserProcessListServiceImpl extends ServiceImpl<TUserProcessListMap
         int nextState = active.getPrcStatus() + 1;
         entity.setPrcStatus(active.getPrcStatus() + 1);
         normalSetChildStateFields(active, orderedState, entity, nextState);
+        sendMsgIfNeed(entity);
     }
 
     @Override
@@ -179,7 +187,7 @@ public class TUserProcessListServiceImpl extends ServiceImpl<TUserProcessListMap
             entity.setNextFlag(stateList.get(stateList.size()-1).getNextFlag());
             // 暂不启用此字段
             entity.setParent(0);
-
+            sendMsgIfNeed(entity);
             save(entity);
             active.setActiveFlag(0);
             updateById(active);
@@ -191,6 +199,7 @@ public class TUserProcessListServiceImpl extends ServiceImpl<TUserProcessListMap
         entity.setPrcStatus(active.getPrcStatus() - 1);
         int lastState = active.getPrcStatus() - 1;
         normalSetChildStateFields(active, orderedState, entity, lastState);
+        sendMsgIfNeed(entity);
     }
 
     @Override
@@ -259,5 +268,16 @@ public class TUserProcessListServiceImpl extends ServiceImpl<TUserProcessListMap
         }
 
         return list.get(0);
+    }
+
+    private void sendMsgIfNeed(TUserProcessList entity) {
+        if (entity.getChecked().equals(1)) {
+            TMessage tMessage = new TMessage();
+            tMessage.setSender(entity.getStuId());
+            tMessage.setReceiver(20);
+            tMessage.setMsg(entity.getPrcName());
+            tMessage.setCreateTime(LocalDateTime.now());
+            messageService.save(tMessage);
+        }
     }
 }

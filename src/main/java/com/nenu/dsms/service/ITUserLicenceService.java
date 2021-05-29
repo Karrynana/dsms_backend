@@ -16,4 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 public interface ITUserLicenceService extends IService<TUserLicence> {
 
     Integer initNewRecord(Integer uid, Integer lid);
+
+    void finishLicence(Integer uid);
 }

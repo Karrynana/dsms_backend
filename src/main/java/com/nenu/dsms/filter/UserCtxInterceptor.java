@@ -62,7 +62,6 @@ public class UserCtxInterceptor implements HandlerInterceptor {
             DsmsContext.setUser(userInfo);
             return true;
         }
-        log.debug("request: {}", request.getRequestURI());
         throw new DsmsException(DsmsExceptionDef.USER_NOT_LOGIN);
     }
 

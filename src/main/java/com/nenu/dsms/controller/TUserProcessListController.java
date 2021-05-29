@@ -4,15 +4,13 @@ package com.nenu.dsms.controller;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.nenu.dsms.def.DsmsContext;
 import com.nenu.dsms.entity.TUserProcessList;
+import com.nenu.dsms.service.ITUserLicenceService;
 import com.nenu.dsms.service.ITUserProcessListService;
+import com.nenu.dsms.vo.request.NextStepRequestVo;
 import com.nenu.dsms.vo.response.StateInfoResponseVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -43,11 +41,11 @@ public class TUserProcessListController {
 
     @PostMapping("/teacher")
     @Transactional
-    public void nextStep(Boolean flag, Integer uid) {
-        if (flag) {
-            userProcessListService.nextStep(uid);
+    public void nextStep(@RequestBody NextStepRequestVo requestVo) {
+        if (requestVo.getFlag()) {
+            userProcessListService.nextStep(requestVo.getUid());
         } else {
-            userProcessListService.lastStep(uid);
+            userProcessListService.lastStep(requestVo.getUid());
         }
     }
 
@@ -60,5 +58,11 @@ public class TUserProcessListController {
     @GetMapping("/next/info")
     public StateInfoResponseVo getNextStateInfo() {
         return userProcessListService.getNextStateInfo(DsmsContext.currentUser().getId());
+    }
+
+    @GetMapping("/teacher/stu")
+    public List<TUserProcessList> getActiveByUserid(Integer uid, Integer ulid) {
+        return userProcessListService.lambdaQuery().eq(TUserProcessList::getStuId, uid)
+                .eq(TUserProcessList::getUlid, ulid).list();
     }
 }
